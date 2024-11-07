@@ -2,9 +2,8 @@
     <img href="https://projecterror.dev" width="150" src="https://i.tasoagc.dev/c1pD" alt="Material-UI logo" />
 </div>
 <h1 align="center">RedM React and Lua Boilerplate</h1>
-<h1> Join the Discord : [Discord]([(https://discord.gg/tNZ2QAA3gP)])
- </h1>
-<h2 align="center=">This project is based on the [Project-error base repository]([https://github.com/project-error/fivem-react-boilerplate-lua])
+<h1 align="center">Join the Discord : [Discord](https://discord.gg/tNZ2QAA3gP)</h1>
+<h2 align="center">This project is based on the [Project-error base repository](https://github.com/project-error/fivem-react-boilerplate-lua)</h2>
 
 
 <div align="center">
