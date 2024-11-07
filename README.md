@@ -1,7 +1,9 @@
 <div align="center">
     <img href="https://projecterror.dev" width="150" src="https://i.tasoagc.dev/c1pD" alt="Material-UI logo" />
 </div>
-<h1 align="center">FiveM React and Lua Boilerplate</h1>
+<h1 align="center">RedM React and Lua Boilerplate</h1>
+
+<h2 align="center=">This project is based on the ![Basic React (TypeScript) & Lua Game Scripts Boilerplate](https://github.com/project-error/fivem-react-boilerplate-lua)
 
 <div align="center">
 A simple and extendable React (TypeScript) boilerplate designed around the Lua ScRT
@@ -170,6 +172,22 @@ debugData([
     data: true,
   }
 ])
+```
+
+**How to create multiple windows**
+```ts
+//  toggleNuiFrame(true, "NAME_OF_YOUR_WINDOW") in your lua file
+// In your App.tsx file : 
+import NAME_OF_YOUR_WINDOW from "./NAME_OF_YOUR_WINDOW";
+
+    <div className="nui-wrapper">
+      <div className="popup-thing">
+        {windowId === "NAME_OF_YOUR_WINDOW" && <NAME_OF_YOUR_WINDOW />}
+      </div>
+    </div>
+
+// Then you can create your new window tsx file.
+
 ```
 
 **Misc Utils**
