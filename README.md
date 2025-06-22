@@ -1,235 +1,279 @@
+
+---
+
 <div align="center">
-    <img href="https://projecterror.dev" width="150" src="https://i.tasoagc.dev/c1pD" alt="Material-UI logo" />
-</div>
 <h1 align="center">RedM React and Lua Boilerplate</h1>
-<h1 align="center">Join the Discord : (https://discord.gg/tNZ2QAA3gP)</h1>
-<h2 align="center">This project is based on the (https://github.com/project-error/fivem-react-boilerplate-lua)</h2>
-
-
-<div align="center">
-A simple and extendable React (TypeScript) boilerplate designed around the Lua ScRT
 </div>
 
 <div align="center">
-
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/project-error/pe-utils/master/LICENSE)
-![Discord](https://img.shields.io/discord/791854454760013827?label=Our%20Discord)
-![David](https://img.shields.io/david/project-error/fivem-react-boilerplate-lua)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=project-error/fivem-react-boilerplate-lua)](https://dependabot.com)
+A simple and extendable React (TypeScript) boilerplate designed for the RedM Lua runtime.
 </div>
 
-This repository is a basic boilerplate for getting started
-with React in NUI. It contains several helpful utilities and
-is bootstrapped using `create-react-app`. It is for both browser
-and in-game based development workflows.
+<br>
 
-For in-game workflows, Utilizing `craco` to override CRA, we can have hot
-builds that just require a resource restart instead of a full
-production build
+This repository is a basic boilerplate for getting started with React in NUI. It contains several helpful utilities and is bootstrapped using `create-react-app`. It is designed for both browser-based and in-game development workflows.
 
-This version of the boilerplate is meant for the CfxLua runtime.
+Utilizing `craco` to override Create React App's default configuration, we can have hot builds that only require a resource restart instead of a full production build, streamlining in-game development.
+
+This version of the boilerplate is intended for use with the RedM (CfxLua) runtime.
 
 ## Requirements
 * [Node > v10.6](https://nodejs.org/en/)
 * [Yarn](https://yarnpkg.com/getting-started/install) (Preferred but not required)
 
-*A basic understanding of the modern web development workflow. If you don't 
-know this yet, React might not be for you just yet.*
+*A basic understanding of the modern web development workflow is recommended. If you are new to this, React may have a steep learning curve.*
 
 ## Getting Started
 
-First clone the repository or use the template option and place
-it within your `resources` folder
+First, clone this repository or use the "Use this template" option on GitHub, and place the resulting folder within your server's `resources` directory.
 
 ### Installation
 
-*The boilerplate was made using `yarn` but is still compatible with
-`npm`.*
+*This boilerplate was developed using `yarn` but is fully compatible with `npm`.*
 
-Install dependencies by navigating to the `web` folder within
-a terminal of your choice and type `npm i` or `yarn`.
+To install the necessary dependencies, navigate to the `web` folder within a terminal and run `npm install` or `yarn install`.
+
+```bash
+# Navigate to the web directory
+cd your-resource-name/web
+
+# Install dependencies using Yarn (recommended)
+yarn install
+
+# Or with NPM
+npm install
+```
 
 ## Features
 
-This boilerplate comes with some utilities and examples to work off of.
+This boilerplate includes several utilities and examples to accelerate your development.
 
-### Lua Utils
+### Lua Utilities
 
 **SendReactMessage**
 
-This is a small wrapper for dispatching NUI messages. This is designed
-to be used with the `useNuiEvent` React hook.
+A small wrapper for dispatching NUI messages from Lua to the React front-end. This is designed to be used with the `useNuiEvent` React hook.
 
-Signature
+**Signature**
 ```lua
----@param action string The action you wish to target
----@param data any The data you wish to send along with this action
+---@param action string The action you wish to target in your React app.
+---@param data any The data you wish to send along with this action.
 SendReactMessage(action, data)
 ```
 
-Usage
+**Usage**
 ```lua
+-- This will trigger the 'setVisible' event listener in React
 SendReactMessage('setVisible', true)
 ```
 
 **debugPrint**
 
-A debug printing utility that is dependent on a convar,
-if the convar is set this will print out to the console.
+A debug printing utility that only prints to the console if a specific convar is enabled.
 
-The convar is dependent on the name given to the resource.
-It follows this format `YOUR_RESOURCE_NAME-debugMode`
+The convar is dependent on the name of your resource, following the format `YOUR_RESOURCE_NAME-debugMode`.
 
-To turn on debugMode add `setr YOUR_RESOURCE_NAME-debugMode 1` to 
-your server.cfg or use the `setr` console command instead.
+To enable debug mode, add `setr YOUR_RESOURCE_NAME-debugMode 1` to your `server.cfg` or execute it directly in the server console.
 
-Signature (Replicates `print`)
+**Signature** (Replicates the standard `print` function)
 ```lua
----@param ... any[] The arguments you wish to send
+---@param ... any[] The arguments you wish to print.
 debugPrint(...)
 ```
 
-Usage
+**Usage**
 ```lua
-debugPrint('wow cool string to print', true, someOtherVar)
+local someVariable = { key = 'value' }
+debugPrint('This is a debug message', true, someVariable)
 ```
 
-### React Utils
-
-Signatures are not included for these utilities as the type definitions
-are sufficient enough.
+### React Utilities
 
 **useNuiEvent**
 
-This is a custom React hook that is designed to intercept and handle
-messages dispatched by the game scripts. This is the primary
-way of creating passive listeners.
+A custom React hook designed to intercept and handle messages dispatched from the Lua scripts. This is the primary method for creating passive listeners for game events.
 
-
-*Note: For now handlers can only be registered a single time. I haven't
-come across a personal usecase for a cascading event system*
+*Note: For simplicity, handlers can only be registered once per action. A cascading event system is not implemented by default.*
 
 **Usage**
 ```jsx
-const MyComp: React.FC = () => {
-  const [state, setState] = useState('')
-  
-  useNuiEvent<string>('myAction', (data) => {
-    // the first argument to the handler function
-    // is the data argument sent using SendReactMessage
-    
-    // do whatever logic u want here
-    setState(data)
-  })
-  
-  return(
-    <div>
-      <h1>Some component</h1>
-      <p>{state}</p>
-    </div>
-  )
-}
+import { useNuiEvent } from './hooks/useNuiEvent';
+import { useState } from 'react';
 
+const MyComponent: React.FC = () => {
+  const [someText, setSomeText] = useState('Default Text');
+  
+  // Listens for 'myAction' from Lua
+  useNuiEvent<string>('myAction', (data) => {
+    // The 'data' argument is what was sent with SendReactMessage
+    console.log(`Received data: ${data}`);
+    setSomeText(data);
+  });
+  
+  return (
+    <div>
+      <h1>Some Component</h1>
+      <p>{someText}</p>
+    </div>
+  );
+};
 ```
 
 **fetchNui**
 
-This is a simple NUI focused wrapper around the standard `fetch` API.
-This is the main way to accomplish active NUI data fetching 
-or to trigger NUI callbacks in the game scripts.
+A simple, NUI-focused wrapper around the standard `fetch` API. This is the primary way to request data from the game scripts or trigger NUI callbacks that return data.
 
-When using this, you must always at least callback using `{}`
-in the gamescripts.
+**Important:** When using `fetchNui`, you must always send a callback from the Lua script, even if it's just an empty table (`{}`).
 
-*This can be heavily customized to your use case*
-
-**Usage**
+**Usage (React)**
 ```ts
-// First argument is the callback event name. 
-fetchNui<ReturnData>('getClientData').then(retData => {
-  console.log('Got return data from client scripts:')
-  console.dir(retData)
-  setClientData(retData)
-}).catch(e => {
-  console.error('Setting mock data due to error', e)
-  setClientData({ x: 500, y: 300, z: 200})
-})
+import { fetchNui } from './utils/fetchNui';
+
+// The first argument is the NUI callback name registered in Lua.
+fetchNui<MyReturnData>('getClientData').then(characterData => {
+  console.log('Received data from client script:', characterData);
+  setClientData(characterData);
+}).catch(error => {
+  console.error('An error occurred:', error);
+  // Set mock data or handle the error
+});
+```
+
+**Usage (Lua - corresponding callback)**
+```lua
+RegisterNUICallback('getClientData', function(data, cb)
+  local clientData = {
+    name = "John Doe",
+    health = 100
+  }
+  -- The cb function sends the data back to the fetchNui promise
+  cb(clientData)
+end)
 ```
 
 **debugData**
 
-This is a function allowing for mocking dispatched game script
-actions in a browser environment. It will trigger `useNuiEvent` handlers
-as if they were dispatched by the game scripts. **It will only fire if the current
-environment is a regular browser and not CEF**
+A function for mocking dispatched game script actions in a browser environment. It will trigger `useNuiEvent` handlers as if they were dispatched from Lua. **This function only executes if the current environment is a regular browser, not the in-game CEF client.**
 
 **Usage**
 ```ts
-// This will target the useNuiEvent hooks registered with `setVisible`
-// and pass them the data of `true`
+import { debugData } from './utils/debugData';
+
+// This will trigger any useNuiEvent hook listening for 'setVisible'
+// and pass `true` as the data.
 debugData([
   {
     action: 'setVisible',
     data: true,
   }
-])
+]);
 ```
 
-**How to create multiple windows**
-```ts
-//  toggleNuiFrame(true, "NAME_OF_YOUR_WINDOW") in your lua file
-// In your App.tsx file : 
-import NAME_OF_YOUR_WINDOW from "./NAME_OF_YOUR_WINDOW";
+### Misc Utilities
 
+*   `isEnvBrowser()`: Returns a boolean indicating if the current environment is a standard web browser. This is useful for writing development-only logic that shouldn't run in-game.
+
+## Creating and Handling Multiple Windows
+
+You can easily manage multiple, independent UI windows from a single React application.
+
+**1. Create a New Window Component**
+
+In your `web/src/components` folder, create a new file for your window (e.g., `Window1.tsx`). This will be a standard React component.
+
+**2. Conditionally Render it in `App.tsx`**
+
+In `App.tsx`, you will need a state to track which window is visible. You can then import your components and render them based on this state.
+
+```tsx
+// In web/src/App.tsx
+
+import React, { useState } from 'react';
+import { useNuiEvent } from './hooks/useNuiEvent';
+import Window1 from './components/Window1';
+import Window2 from './components/Window2';
+
+const App: React.FC = () => {
+  // This state will determine which window component to show
+  const [windowId, setWindowId] = useState<string | null>(null);
+
+  // This event is triggered by toggleNuiFrame in Lua
+  useNuiEvent<string>('setWindow', (newWindowId) => {
+    setWindowId(newWindowId);
+  });
+
+  return (
     <div className="nui-wrapper">
-      <div className="popup-thing">
-        {windowId === "NAME_OF_YOUR_WINDOW" && <NAME_OF_YOUR_WINDOW />}
-      </div>
+      {/* Conditionally render your windows based on the windowId state */}
+      {windowId === "window1" && <Window1 />}
+      {windowId === "window2" && <Window2 />}
     </div>
+  );
+};
 
-// Then you can create your new window tsx file.
-
+export default App;
 ```
 
-**Misc Utils**
+**3. Trigger Windows from Lua**
 
-These are small but useful included utilities.
+In your client-side Lua script, create commands or events to open your windows. The `toggleNuiFrame` function is used for this, where the second argument is the `windowId` you will check for in React.
 
-* `isEnvBrowser()` - Will return a boolean indicating if the current 
-  environment is a regular browser. (Useful for logic in development)
+```lua
+-- In your client.lua file
+
+-- The custom toggleNuiFrame function that tells React which window to open
+function toggleNuiFrame(visible, windowId)
+  SetNuiFocus(visible, visible)
+  SendReactMessage('setVisible', visible)
+  
+  if visible then
+    -- When opening, tell React which window to display
+    SendReactMessage('setWindow', windowId)
+  else
+    -- When closing, clear the window ID
+    SendReactMessage('setWindow', nil)
+  end
+end
+
+-- Command to open the first window
+RegisterCommand('show-nui1', function()
+  toggleNuiFrame(true, "window1")
+  debugPrint('Show NUI frame 1')
+end, false)
+
+-- Command to open the second window
+RegisterCommand('show-nui2', function()
+  toggleNuiFrame(true, "window2")
+  debugPrint('Show NUI frame 2')
+end, false)
+```
 
 ## Development Workflow
 
-This boilerplate was designed with development workflow in mind.
-It includes some helpful scripts to accomplish that.
+This boilerplate is designed to make development as smooth as possible.
 
-**Hot Builds In-Game**
+### Hot Builds In-Game
 
-When developing in-game, you can use the hot build system by
-running the `start:game` script. This is essentially the start
-script but it writes to disk. Meaning all that is required is a
-resource restart to update the game script
+To develop in-game without needing to create a full production build after every change, you can use the hot-build system. This script watches for file changes and rebuilds them to disk automatically. After a rebuild, all you need to do is restart the resource in-game to see the changes.
 
 **Usage**
 ```sh
-# yarn
+# Using yarn
 yarn start:game
-# npm
+
+# Using npm
 npm run start:game
 ```
 
-**Production Builds**
+### Production Builds
 
-When you are done with development phase for your resource. You
-must create a production build that is optimized and minimized.
+When you are ready to deploy your resource, you must create an optimized and minified production build. This will ensure the best performance.
 
-You can do this by running the following:
-
+**Usage**
 ```sh
+# Using yarn
+yarn build
+
+# Using npm
 npm run build
-yarn build 
 ```
-
-## Additional Notes
-
-Need further support? Join our [Discord](https://discord.com/invite/HYwBjTbAY5)!
